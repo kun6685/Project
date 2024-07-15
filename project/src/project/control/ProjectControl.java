@@ -71,6 +71,7 @@ public class ProjectControl {
                 	System.out.println("                      종료되었습니다.                      ");
                 	System.out.println("======================================================");
                     isTrue = false;
+                    System.exit(0);
                     break;
             }
         }
