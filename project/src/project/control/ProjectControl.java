@@ -82,9 +82,9 @@ public class ProjectControl {
             System.out.println("======================================================");
             System.out.println("                       버거 선택                       ");
             System.out.println("------------------------------------------------------");
-            System.out.println("               1.롱치킨버거     2.불고기와퍼               ");
+            System.out.printf("        1.%s(%d원)     2.%s(%d원)\n", burgerDAO.getBurgerName("1"), burgerDAO.getBurgerPrice("1"), burgerDAO.getBurgerName("2"), burgerDAO.getBurgerPrice("2"));
             System.out.println("------------------------------------------------------");
-
+            System.out.println();
             System.out.println("q.돌아가기");
             System.out.println("");
 
@@ -119,7 +119,7 @@ public class ProjectControl {
              System.out.println("======================================================");
              System.out.println("                      사이드 선택                       ");
              System.out.println("------------------------------------------------------");
-             System.out.println("                1.감자튀김     2.치즈스틱                ");
+             System.out.printf("        1.%s(%d원)     2.%s(%d원)\n", sideDAO.getSideName("1"), sideDAO.getSidePrice("1"), sideDAO.getSideName("2"), sideDAO.getSidePrice("2"));
              System.out.println("------------------------------------------------------");
 
              System.out.println("q.돌아가기");
@@ -157,7 +157,7 @@ public class ProjectControl {
             System.out.println("======================================================");
             System.out.println("                      음료수 선택                       ");
             System.out.println("------------------------------------------------------");
-            System.out.println("                  1.콜라     2.사이다                  ");
+            System.out.printf("        1.%s(%d원)     2.%s(%d원)\n", drinkDAO.getDrinkName("1"), drinkDAO.getDrinkPrice("1"), drinkDAO.getDrinkName("2"), drinkDAO.getDrinkPrice("2"));
             System.out.println("------------------------------------------------------");
 
             System.out.println("q.돌아가기");
@@ -191,18 +191,18 @@ public class ProjectControl {
     
     void confirmOrder(int burgerMenu, int sideMenu, int drinkMenu) {
     	
-    	String burgerMenuId = Integer.toString(burgerMenu);
-    	String sideMenuId = Integer.toString(sideMenu);
-    	String drinkMenuId = Integer.toString(drinkMenu);
+      String burgerMenuId = Integer.toString(burgerMenu);
+      String sideMenuId = Integer.toString(sideMenu);
+      String drinkMenuId = Integer.toString(drinkMenu);
     	
-    	burgerVO.setMenuId(burgerMenuId);
-    	sideVO.setMenuId(sideMenuId);
-    	drinkVO.setMenuId(drinkMenuId);
+      burgerVO.setMenuId(burgerMenuId);
+      sideVO.setMenuId(sideMenuId);
+      drinkVO.setMenuId(drinkMenuId);
     	
-    	
-    	String burgerMenuName = burgerDAO.getBurgerName(burgerVO.getMenuId());
-    	String sideMenuName = sideDAO.getSideName(sideVO.getMenuId());
-    	String drinkMenuName = drinkDAO.getDrinkName(drinkVO.getMenuId());
+    
+      String burgerMenuName = burgerDAO.getBurgerName(burgerVO.getMenuId());
+      String sideMenuName = sideDAO.getSideName(sideVO.getMenuId());
+      String drinkMenuName = drinkDAO.getDrinkName(drinkVO.getMenuId());
         
       int burgerMenuPrice = burgerDAO.getBurgerPrice(burgerVO.getMenuId());
       int sideMenuPrice = sideDAO.getSidePrice(sideVO.getMenuId());
@@ -216,31 +216,71 @@ public class ProjectControl {
 	        System.out.println("======================================================");
 	        System.out.println("                     주문내역 확인                      ");
 	        System.out.println("------------------------------------------------------");
-	        System.out.println("버거 : " + burgerMenuName);
-	        System.out.println("사이드 : " + sideMenuName);
-	        System.out.println("음료 : " + drinkMenuName);
-	        System.out.println("총 금액 : " + totalOrderPrice);
-	        System.out.println("주문하신 메뉴가 맞습니까?(Y/N)");
+	        System.out.println("버거 : " + burgerMenuName + " (" + burgerMenuPrice + "원)");
+	        System.out.println("사이드 : " + sideMenuName + " (" + sideMenuPrice + "원)");
+	        System.out.println("음료 : " + drinkMenuName+ " (" + drinkMenuPrice + "원)");
+	        System.out.println("총 금액 : " + totalOrderPrice + "원");
 	        
+	        orderDAO.orderVerification(userId, 
+			burgerMenuName, burgerMenuPrice,
+	        sideMenuName, sideMenuPrice,
+	        drinkMenuName, drinkMenuPrice, totalOrderPrice);
+	        
+	        Timestamp orderTime = new Timestamp(System.currentTimeMillis());
+	        orderVO =  new OrderVO(userId, 
+			burgerMenuName, burgerMenuPrice,
+	        sideMenuName, sideMenuPrice,
+	        drinkMenuName, drinkMenuPrice, totalOrderPrice, orderTime);
+	        
+	        System.out.println("");
+	        System.out.println("q.돌아가기");
+            System.out.println("");
+	        System.out.print("수정하실 메뉴가 있습니까?(Y/N) ");
 	        String menuSelect = scanner.nextLine();
+
+            if ("q".equalsIgnoreCase(menuSelect)) {
+            	orderDAO.deleteOrder(orderDAO.getMaxOrderId());
+            	loginMainPage(userId);
+                break;
+            }
+            
 	        if(menuSelect.equals("Y") || menuSelect.equals("y")) {
 	        	System.out.println("======================================================");
-		        System.out.println("                       주문완료                        ");
+		        System.out.println("                        메뉴수정                         ");
 		        System.out.println("------------------------------------------------------");
-		        orderDAO.orderVerification(userId, 
-		        burgerMenuName, burgerMenuPrice,
-            sideMenuName, sideMenuPrice,
-            drinkMenuName, drinkMenuPrice, totalOrderPrice);
-		        isTrue = false;
-		        Timestamp orderTime = new Timestamp(System.currentTimeMillis());
-		        orderVO =  new OrderVO(userId, 
-				    burgerMenuName, burgerMenuPrice,
-		        sideMenuName, sideMenuPrice,
-		        drinkMenuName, drinkMenuPrice, totalOrderPrice, orderTime);
+		        System.out.printf("   버거 수정   1.%s(%d원)   2.%s(%d원)\n", burgerDAO.getBurgerName("1"), burgerDAO.getBurgerPrice("1"), burgerDAO.getBurgerName("2"), burgerDAO.getBurgerPrice("2"));
+		        System.out.printf("   사이드 수정   1.%s(%d원)   2.%s(%d원)\n", sideDAO.getSideName("1"), sideDAO.getSidePrice("1"), sideDAO.getSideName("2"), sideDAO.getSidePrice("2"));
+		        System.out.printf("   음료 수정   1.%s(%d원)   2.%s(%d원)\n", drinkDAO.getDrinkName("1"), drinkDAO.getDrinkPrice("1"), drinkDAO.getDrinkName("2"), drinkDAO.getDrinkPrice("2"));
+		        System.out.println("------------------------------------------------------");
+		        
+		        System.out.println("");
+		        System.out.print("버거 선택 >> ");
+		        String burgerSelect = scanner.nextLine();
+		        
+		        System.out.print("사이드 선택 >> ");
+		        String sideSelect = scanner.nextLine();
+		        
+		        System.out.print("음료 선택 >> ");
+		        String drinkSelect = scanner.nextLine();
+		        
+		        
+		        
+		        System.out.println("======================================================");
+		        System.out.println("                     주문내역 확인                      ");
+		        System.out.println("------------------------------------------------------");
+		        System.out.println("버거 : " + burgerDAO.getBurgerName(burgerSelect) + " (" + burgerDAO.getBurgerPrice(burgerSelect) + "원)");
+		        System.out.println("사이드 : " + sideDAO.getSideName(sideSelect) + " (" + sideDAO.getSidePrice(sideSelect) + "원)");
+		        System.out.println("음료 : " + drinkDAO.getDrinkName(drinkSelect)+ " (" + drinkDAO.getDrinkPrice(drinkSelect) + "원)");
+		        System.out.println("총 금액 : " + totalOrderPrice + "원");
+		        
+		        int sum = burgerDAO.getBurgerPrice(burgerSelect) + sideDAO.getSidePrice(sideSelect) + drinkDAO.getDrinkPrice(drinkSelect);
+		        
+		        orderDAO.updateOrder(orderDAO.getMaxOrderId(), burgerDAO.getBurgerName(burgerSelect), burgerDAO.getBurgerPrice(burgerSelect), sideDAO.getSideName(sideSelect),
+		        sideDAO.getSidePrice(sideSelect), drinkDAO.getDrinkName(drinkSelect), drinkDAO.getDrinkPrice(drinkSelect), sum);
 		        loginMainPage(userId);
 	        } else {
 	        	System.out.println("======================================================");
-		        System.out.println("                       주문취소                        ");
+		        System.out.println("                       주문완료                        ");
 		        System.out.println("------------------------------------------------------");
 		        isTrue = false;
 		        loginMainPage(userId);
