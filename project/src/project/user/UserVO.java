@@ -4,11 +4,20 @@ import java.util.Date;
 
 public class UserVO {
 	
+	private String isAdmin; // 회원구분
 	private String userName; // 이름
 	private String userId; // 아이디
 	private String userPassword; // 비밀번호
 	private String phoneNumber; // 전화번호
 	private Date creationDate; // 생성날짜
+	
+	public String getIsAdmin() {
+		return isAdmin;
+	}
+	
+	public void setIsAdmin(String isAdmin) {
+		this.isAdmin = isAdmin;
+	}
 	
 	
 	public String getUserName() {

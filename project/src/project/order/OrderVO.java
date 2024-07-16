@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class OrderVO {
+	  private String isAdmin;
     private int orderId;
     private String userId;
     private String burgerMenuName;
@@ -31,6 +32,17 @@ public class OrderVO {
     }
 
     // Getter 및 Setter 메서드
+    
+    public String getIsAdmin() {
+      return isAdmin;
+  } 
+
+    public void setIsAdmin(String isAdmin) {
+      this.isAdmin = isAdmin;
+    }
+    
+    
+    
     public int getOrderId() {
         return orderId;
     }

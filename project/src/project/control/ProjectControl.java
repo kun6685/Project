@@ -29,6 +29,9 @@ public class ProjectControl {
     DrinkVO drinkVO = new DrinkVO();
     OrderVO orderVO;
     
+
+    StringBuilder password = new StringBuilder();
+    
     String userId;
     
     boolean isTrue = true;
@@ -221,15 +224,17 @@ public class ProjectControl {
 	        System.out.println("사이드 : " + sideMenuName + " (" + sideMenuPrice + "원)");
 	        System.out.println("음료 : " + drinkMenuName+ " (" + drinkMenuPrice + "원)");
 	        System.out.println("총 금액 : " + totalOrderPrice + "원");
+	        System.out.println("");
+
 	        
 	        orderDAO.orderVerification(userId, 
-			burgerMenuName, burgerMenuPrice,
+			    burgerMenuName, burgerMenuPrice,
 	        sideMenuName, sideMenuPrice,
 	        drinkMenuName, drinkMenuPrice, totalOrderPrice);
 	        
 	        Timestamp orderTime = new Timestamp(System.currentTimeMillis());
 	        orderVO =  new OrderVO(userId, 
-			burgerMenuName, burgerMenuPrice,
+			    burgerMenuName, burgerMenuPrice,
 	        sideMenuName, sideMenuPrice,
 	        drinkMenuName, drinkMenuPrice, totalOrderPrice, orderTime);
 	        
@@ -250,8 +255,8 @@ public class ProjectControl {
 		        System.out.println("                        메뉴수정                         ");
 		        System.out.println("------------------------------------------------------");
 		        System.out.printf("   버거 수정   1.%s(%d원)   2.%s(%d원)\n", burgerDAO.getBurgerName("1"), burgerDAO.getBurgerPrice("1"), burgerDAO.getBurgerName("2"), burgerDAO.getBurgerPrice("2"));
-		        System.out.printf("   사이드 수정   1.%s(%d원)   2.%s(%d원)\n", sideDAO.getSideName("1"), sideDAO.getSidePrice("1"), sideDAO.getSideName("2"), sideDAO.getSidePrice("2"));
-		        System.out.printf("   음료 수정   1.%s(%d원)   2.%s(%d원)\n", drinkDAO.getDrinkName("1"), drinkDAO.getDrinkPrice("1"), drinkDAO.getDrinkName("2"), drinkDAO.getDrinkPrice("2"));
+		        System.out.printf("   사이드 수정  1.%s(%d원)    2.%s(%d원)\n", sideDAO.getSideName("1"), sideDAO.getSidePrice("1"), sideDAO.getSideName("2"), sideDAO.getSidePrice("2"));
+		        System.out.printf("   음료 수정   1.%s(%d원)       2.%s(%d원)\n", drinkDAO.getDrinkName("1"), drinkDAO.getDrinkPrice("1"), drinkDAO.getDrinkName("2"), drinkDAO.getDrinkPrice("2"));
 		        System.out.println("------------------------------------------------------");
 		        
 		        System.out.println("");
@@ -267,7 +272,7 @@ public class ProjectControl {
 		        
 		        
 		        System.out.println("======================================================");
-		        System.out.println("                     주문내역 확인                      ");
+		        System.out.println("                       주문내역                         ");
 		        System.out.println("------------------------------------------------------");
 		        System.out.println("버거 : " + burgerDAO.getBurgerName(burgerSelect) + " (" + burgerDAO.getBurgerPrice(burgerSelect) + "원)");
 		        System.out.println("사이드 : " + sideDAO.getSideName(sideSelect) + " (" + sideDAO.getSidePrice(sideSelect) + "원)");
@@ -315,8 +320,17 @@ public class ProjectControl {
             userVO.setUserId(userId);
             this.userId = userId; 
             userVO.setUserPassword(userPassword);
+            
+            if(userId.equals("admin") && userPassword.equals("admin")) {
+            	System.out.println("");
+              System.out.println("- 관리자 계정 접속 -");
+            	adminPage();
+            }
+
 
             if (userDAO.loginCheck(userVO)) {
+            	  System.out.println("");
+                System.out.println("- 로그인 성공 -");
             		loginMainPage(userVO.getUserId());
                 break;
             } else {
@@ -327,6 +341,82 @@ public class ProjectControl {
 
         }
     }
+    
+    // 관리자 페이지
+    void adminPage() {
+    	while(isTrue) {
+    		isTrue = true;
+	    	System.out.println("");
+	    	System.out.println("######################################################");
+	    	System.out.println("                      관리자 페이지                      ");
+	    	System.out.println("======================================================");
+	    	System.out.println("     1.회원정보 조회     2.주문내역 조회     3.로그아웃     ");
+	    	System.out.println("------------------------------------------------------");
+	    	System.out.println("");
+	    	System.out.print("선택 >> ");
+	    	
+	    	int menuSelect = scanner.nextInt();
+	    	
+	    	switch(menuSelect) {
+	    	  case 1:
+	    	  	while(isTrue) {
+	    	  	List<UserVO> users = userDAO.showAllUserInfo();
+	    	  	System.out.println("================================================================================");
+	    	  	System.out.printf("%-12s | %-12s | %-12s | %-12s | %-15s | %-15s%n", "회원구분", "이름", "아이디", "패스워드", "전화번호", "생성일자");
+	    	  	for (UserVO user : users) {
+	    	      System.out.println("--------------------------------------------------------------------------------");
+	    	      System.out.printf("%-12s | %-12s | %-12s | %-12s | %-15s | %-15s%n",
+	    	      user.getIsAdmin(),
+	    	      user.getUserName(), user.getUserId(), user.getUserPassword(), 
+	    	      user.getPhoneNumber(), user.getCreationDate());
+
+	            };
+	    	  		System.out.println("");
+	    	  		System.out.println("q.돌아가기");
+	    	  		System.out.println("");
+	    	  		System.out.print("선택 >> ");
+	    	  		String select = scanner.nextLine();
+	    	  		System.out.println("");
+	    	  		System.out.println("");
+	    	  		if ("q".equalsIgnoreCase(select)) {
+	    	  			  break;
+	    	  		}
+	    	  	}
+	    	  	break;
+	    	  case 2:
+	    	  	while(isTrue) {
+		    	  	List<OrderVO> orderList = orderDAO.getAllOrderHistory();
+		    	  	System.out.println("=================================================================================================================================================================");
+		    	  	System.out.printf("%-10s | %-12s | %-25s | %-25s | %-25s | %-10s | %-20s%n",
+		    	  	        "주문 ID", "사용자 ID", "버거 메뉴", "사이드 메뉴", "음료 메뉴", "총 가격", "주문 일자");
+		    	  	for (OrderVO order : orderList) {
+		    	  		System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------");
+		    	  		System.out.printf("%-10d | %-12s | %-25s | %-25s | %-25s | %-10d | %-20s%n",
+		                order.getOrderId(), order.getUserId(),
+		                order.getBurgerMenuName() + " (" + order.getBurgerMenuPrice() + "원)",
+		                order.getSideMenuName() + " (" + order.getSideMenuPrice() + "원)",
+		                order.getDrinkMenuName() + " (" + order.getDrinkMenuPrice() + "원)",
+		                order.getTotalPrice(), order.getOrderTime());
+		            };
+		    	  		System.out.println("");
+		    	  		System.out.println("q.돌아가기");
+		    	  		System.out.println("");
+		    	  		System.out.print("선택 >> ");
+		    	  		String select = scanner.nextLine();
+		    	  		System.out.println("");
+		    	  		System.out.println("");
+		    	  		if ("q".equalsIgnoreCase(select)) {
+		    	  			  break;
+		    	  		}
+		    	  	}
+		    	  	break;
+	    	  case 3:
+	    	  	main();
+	    	  	isTrue = false;
+	    	  	break;
+	    	}
+	    	}
+	    }
     
     // 로그인시 페이지
     void loginMainPage(String userId) {
@@ -459,7 +549,7 @@ public class ProjectControl {
                         break;
                     }
 
-                    System.out.print("핸드폰 번호 입력 > ");
+                    System.out.print("전화번호 입력 > ");
                     String phoneNumber = scanner.nextLine().trim();
                     if ("q".equalsIgnoreCase(phoneNumber)) {
                         break;
@@ -499,7 +589,7 @@ public class ProjectControl {
                         break;
                     }
 
-                    System.out.print("핸드폰 번호 입력 > ");
+                    System.out.print("전화번호 입력 > ");
                     phoneNumber = scanner.nextLine().trim();
                     if ("q".equalsIgnoreCase(phoneNumber)) {
                         break;
@@ -533,7 +623,7 @@ public class ProjectControl {
     	List<OrderVO> orderHistoryList = orderDAO.getOrderHistory(userId);
     	while(isTrue) {
 	    	System.out.println("======================================================");
-	      System.out.println("                       구매내역                        ");
+	      System.out.println("                      구매내역                         ");
 	      System.out.println("------------------------------------------------------");
 	      
 	      for (OrderVO order : orderHistoryList) {
@@ -542,7 +632,9 @@ public class ProjectControl {
 	        System.out.println("버거: " + order.getBurgerMenuName() + "(" + order.getBurgerMenuPrice() + "원" + ")");
 	        System.out.println("사이드: " + order.getSideMenuName() + "(" + order.getSideMenuPrice() + "원" + ")");
 	        System.out.println("음료: " + order.getDrinkMenuName() + "(" + order.getDrinkMenuPrice() + "원" + ")");
-	        System.out.println("총 가격: " + order.getTotalPrice() + "원");
+	        System.out.println("");
+	        System.out.println("총 금액: " + order.getTotalPrice() + "원");
+	        System.out.println("");
 	        System.out.println("------------------------------------------------------");
 	        sum += order.getTotalPrice();
 	        System.out.println("총 소비 금액 : " + sum + "원");

@@ -39,8 +39,46 @@ public class OrderDAO extends DatabaseConnection {
         }
     }
     
+    // 모든 사용자의 구매 내역 가져오기
+    public List<OrderVO> getAllOrderHistory() {
+      List<OrderVO> orderHistory = new ArrayList<>();
+      String sql = "SELECT * FROM order_table";
+      
+      try (Connection connection = getConnection();
+           PreparedStatement psmt = connection.prepareStatement(sql);
+           ResultSet rs = psmt.executeQuery()) {
+          
+          while (rs.next()) {
+              int orderId = rs.getInt("order_id");
+              String userId = rs.getString("user_id");
+              String burgerName = rs.getString("burger_menu_name");
+              int burgerPrice = rs.getInt("burger_menu_price");
+              String sideName = rs.getString("side_menu_name");
+              int sidePrice = rs.getInt("side_menu_price");
+              String drinkName = rs.getString("drink_menu_name");
+              int drinkPrice = rs.getInt("drink_menu_price");
+              int totalPrice = rs.getInt("total_price");
+              Timestamp orderTime = rs.getTimestamp("order_time");
+
+              OrderVO order = new OrderVO(userId, burgerName, burgerPrice,
+                                          sideName, sidePrice, drinkName, drinkPrice,
+                                          totalPrice, orderTime);
+              
+              order.setOrderId(orderId);
+              
+              orderHistory.add(order);
+          }
+          
+      } catch (SQLException e) {
+          e.printStackTrace();
+      }
+      
+      return orderHistory;
+  }
+
     
-    // 사용자의 구매 내역 가져오기
+    
+    // 특정 사용자의 구매 내역 가져오기
     public List<OrderVO> getOrderHistory(String userId) {
         List<OrderVO> orderHistory = new ArrayList<>();
         String sql = "SELECT * FROM order_table WHERE user_id = ?";

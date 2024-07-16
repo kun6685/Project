@@ -1,13 +1,14 @@
 package project.user;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import project.database.DatabaseConnection;
-import project.order.OrderVO;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.Random;
+import project.database.DatabaseConnection;
 
 public class UserDAO extends DatabaseConnection {
 
@@ -168,4 +169,32 @@ public class UserDAO extends DatabaseConnection {
           return false;
       }
    }
+    
+    // 모든 회원정보 불러오기
+    public List<UserVO> showAllUserInfo() {
+      List<UserVO> userList = new ArrayList<>();
+      String sql = "SELECT * FROM user_table";
+
+      try (Connection connection = getConnection();
+           PreparedStatement psmt = connection.prepareStatement(sql);
+           ResultSet rs = psmt.executeQuery()) {
+
+          while (rs.next()) {
+              UserVO user = new UserVO();
+              user.setIsAdmin(rs.getString("isAdmin"));
+              user.setUserName(rs.getString("user_name"));
+              user.setUserId(rs.getString("user_id"));
+              user.setUserPassword(rs.getString("user_password"));
+              user.setPhoneNumber(rs.getString("phone_number"));
+              user.setCreationDate(rs.getDate("creation_date"));
+
+              userList.add(user);
+          }
+
+      } catch (SQLException e) {
+          e.printStackTrace();
+      }
+
+      return userList;
+  }
 }
