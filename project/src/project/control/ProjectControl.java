@@ -361,15 +361,15 @@ public class ProjectControl {
 	    	  case 1:
 	    	  	while(isTrue) {
 	    	  	List<UserVO> users = userDAO.showAllUserInfo();
-	    	  	System.out.println("================================================================================");
+	    	  	System.out.println("===================================================================================================");
 	    	  	System.out.printf("%-12s | %-12s | %-12s | %-12s | %-15s | %-15s%n", "회원구분", "이름", "아이디", "패스워드", "전화번호", "생성일자");
+	    	  	System.out.println("---------------------------------------------------------------------------------------------------");
 	    	  	for (UserVO user : users) {
-	    	      System.out.println("--------------------------------------------------------------------------------");
 	    	      System.out.printf("%-12s | %-12s | %-12s | %-12s | %-15s | %-15s%n",
 	    	      user.getIsAdmin(),
 	    	      user.getUserName(), user.getUserId(), user.getUserPassword(), 
 	    	      user.getPhoneNumber(), user.getCreationDate());
-
+		    	  	System.out.println("-------------------------------------------------------------------------------------------------");
 	            };
 	    	  		System.out.println("");
 	    	  		System.out.println("q.돌아가기");
@@ -389,14 +389,15 @@ public class ProjectControl {
 		    	  	System.out.println("=================================================================================================================================================================");
 		    	  	System.out.printf("%-10s | %-12s | %-25s | %-25s | %-25s | %-10s | %-20s%n",
 		    	  	        "주문 ID", "사용자 ID", "버거 메뉴", "사이드 메뉴", "음료 메뉴", "총 가격", "주문 일자");
+		    	  	System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		    	  	for (OrderVO order : orderList) {
-		    	  		System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		    	  		System.out.printf("%-10d | %-12s | %-25s | %-25s | %-25s | %-10d | %-20s%n",
 		                order.getOrderId(), order.getUserId(),
 		                order.getBurgerMenuName() + " (" + order.getBurgerMenuPrice() + "원)",
 		                order.getSideMenuName() + " (" + order.getSideMenuPrice() + "원)",
 		                order.getDrinkMenuName() + " (" + order.getDrinkMenuPrice() + "원)",
 		                order.getTotalPrice(), order.getOrderTime());
+		    	  		System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		            };
 		    	  		System.out.println("");
 		    	  		System.out.println("q.돌아가기");

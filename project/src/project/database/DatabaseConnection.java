@@ -13,7 +13,7 @@ public class DatabaseConnection {
     protected ResultSet resultSet;
 
     public Connection getConnection() {
-        String url = "jdbc:oracle:thin:@localhost:1521:xe";
+        String url = "jdbc:oracle:thin:@192.168.0.30:1521:xe";
         String driver = "oracle.jdbc.driver.OracleDriver";
         String user = "project";
         String password = "project";
